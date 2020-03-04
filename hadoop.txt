@@ -1,0 +1,72 @@
+Hadoop-NameNode:ec2-100-26-109-205.compute-1.amazonaws.com
+Hadoop-DataNode1:ec2-3-87-10-130.compute-1.amazonaws.com
+Hadoop-DataNode2:ec2-35-175-153-131.compute-1.amazonaws.com
+Hadoop-DataNode3:ec2-18-234-101-68.compute-1.amazonaws.com
+
+mkdir server
+cd server
+wget https://downloads.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz
+tar xvzf hadoop-2.9.2.tar.gz
+
+<configuration>
+  <property>
+    <name>fs.defaultFS</name>
+    <value>ec2-100-26-109-205.compute-1.amazonaws.com:9000</value>
+  </property>
+</configuration>
+
+mkdir pub_key_nn
+cd pub_key_nn/
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeuhphfiZUVpVZCINX6O/HN20ayTxhTZHR3T48W5oM4Z4APxlAJcFtpOw/ctoVZT23JAua41DPqJPkV30gUY0LPb30/+tTxCJlSkgLYVWtNDnggAJw5CEOk9NHdSsxh0loxPRaJiDH3SOJYXkEzbekt0m6EbYTqV0S51Fn8huW5rPgoBoOYXNNY1KR9OuNXPwD6N3W6V0ZL7lalAWU60p0dODwPlFQpmSkgwYJruOMGPowZF6ofwafIsvzjZBNac5cD7i1IqyD8FqtA6BJhLYqvZufmmGFc/3PflImE7LdPPMCK1Ee6BYyRe0wNRk5ARIyt76jcP0L6wlbFGGl7Wlv ubuntu@ip-172-31-86-196"> pubnn.pub
+cat pubnn.pub >> ~/.ssh/authorized_keys
+/////
+Host nnode
+  HostName ec2-100-26-109-205.compute-1.amazonaws.com
+  User ubuntu
+  IdentityFile ~/.ssh/id_rsa
+
+Host dnode1
+  HostName ec2-3-87-10-130.compute-1.amazonaws.com
+  User ubuntu
+  IdentityFile ~/.ssh/id_rsa
+
+Host dnode2
+  HostName ec2-35-175-153-131.compute-1.amazonaws.com
+  User ubuntu
+  IdentityFile ~/.ssh/id_rsa
+
+Host dnode3
+  HostName ec2-18-234-101-68.compute-1.amazonaws.com
+  User ubuntu
+  IdentityFile ~/.ssh/id_rsa
+///
+
+<configuration>
+  <property>
+    <name>mapreduce.jobtracker.address</name>
+    <value>ec2-100-26-109-205.compute-1.amazonaws.com:54311</value>
+  </property>
+  <property>
+    <name>mapreduce.framework.name</name>
+    <value>yarn</value>
+  </property>
+</configuration>
+
+
+<configuration>
+
+  <!-- Site specific YARN configuration properties -->
+  <property>
+    <name>yarn.nodemanager.aux-services</name>
+    <value>mapreduce_shuffle</value>
+  </property>
+  <property>
+    <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+    <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+  </property>
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>ec2-100-26-109-205.compute-1.amazonaws.com</value>
+  </property>
+
+</configuration>
