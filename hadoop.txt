@@ -1,50 +1,62 @@
-Hadoop-NameNode:ec2-100-26-109-205.compute-1.amazonaws.com
-Hadoop-DataNode1:ec2-3-87-10-130.compute-1.amazonaws.com
-Hadoop-DataNode2:ec2-35-175-153-131.compute-1.amazonaws.com
-Hadoop-DataNode3:ec2-18-234-101-68.compute-1.amazonaws.com
+haddop-namenode:ec2-3-80-180-13.compute-1.amazonaws.com
+hadoop-datanode1:ec2-54-173-152-183.compute-1.amazonaws.com
+hadoop-datanode2:ec2-100-26-183-255.compute-1.amazonaws.com
+hadoop-datanode3:ec2-3-88-45-201.compute-1.amazonaws.com
 
 mkdir server
 cd server
 wget https://downloads.apache.org/hadoop/common/hadoop-2.9.2/hadoop-2.9.2.tar.gz
 tar xvzf hadoop-2.9.2.tar.gz
 
+nano ~/server/hadoop-2.9.2/etc/hadoop/hadoop-env.sh
+
+1.
+nano ~/server/hadoop-2.9.2/etc/hadoop/core-site.xml
+
 <configuration>
   <property>
     <name>fs.defaultFS</name>
-    <value>ec2-100-26-109-205.compute-1.amazonaws.com:9000</value>
+    <value>ec2-3-80-180-13.compute-1.amazonaws.com:9000</value>
   </property>
 </configuration>
 
-mkdir pub_key_nn
-cd pub_key_nn/
-echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDeuhphfiZUVpVZCINX6O/HN20ayTxhTZHR3T48W5oM4Z4APxlAJcFtpOw/ctoVZT23JAua41DPqJPkV30gUY0LPb30/+tTxCJlSkgLYVWtNDnggAJw5CEOk9NHdSsxh0loxPRaJiDH3SOJYXkEzbekt0m6EbYTqV0S51Fn8huW5rPgoBoOYXNNY1KR9OuNXPwD6N3W6V0ZL7lalAWU60p0dODwPlFQpmSkgwYJruOMGPowZF6ofwafIsvzjZBNac5cD7i1IqyD8FqtA6BJhLYqvZufmmGFc/3PflImE7LdPPMCK1Ee6BYyRe0wNRk5ARIyt76jcP0L6wlbFGGl7Wlv ubuntu@ip-172-31-86-196"> pubnn.pub
-cat pubnn.pub >> ~/.ssh/authorized_keys
+2.
+ls -la /usr/local/hadoop/hdfs/
+tiene que estar data a nombre de ubuntu
+3.
+nnode>ssh-keygen
+cat .ssh/id_rsa.pub
+echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvXT4V8SVTshCVfO8RB1J9BhVEzfBPgrsd8PYqAEueDKN9j/cNOJ2FBjUD/Ee/R7tS7cJVtg5Z7dd6luWTafycu+ifs5SoolHhTm4IhSA8bcUtpqOv0OIUtrd42OF/APj4ZV7hmVvw73YE++GZk9lGl/54FyjwdqL7bK2wJNqwT3XRyVw4mLO6lmDZX39oC+PSdglc1xEFttDolmlYtvodavPhgrglFwRVRxy9TEk9HLnVZclXDPq+AEZ09vPwR+tZ0+VRE/sCLFmHgOev4y1PYNA4ClQ//QK2RG68qKBo4VZ96y88OfmHvQ/9ZzwGG8Ad2b3PlNsxGObPa1RGaFlF ubuntu@ip-172-31-83-21">> authorized_keys
+
+4.
 /////
-Host nnode
-  HostName ec2-100-26-109-205.compute-1.amazonaws.com
+Host namenode
+  HostName ec2-3-80-180-13.compute-1.amazonaws.com
   User ubuntu
   IdentityFile ~/.ssh/id_rsa
 
-Host dnode1
-  HostName ec2-3-87-10-130.compute-1.amazonaws.com
+Host datanode1
+  HostName ec2-54-173-152-183.compute-1.amazonaws.com
   User ubuntu
   IdentityFile ~/.ssh/id_rsa
 
-Host dnode2
-  HostName ec2-35-175-153-131.compute-1.amazonaws.com
+Host datanode2
+  HostName ec2-100-26-183-255.compute-1.amazonaws.com
   User ubuntu
   IdentityFile ~/.ssh/id_rsa
 
-Host dnode3
-  HostName ec2-18-234-101-68.compute-1.amazonaws.com
+Host datanode3
+  HostName ec2-3-88-45-201.compute-1.amazonaws.com
   User ubuntu
   IdentityFile ~/.ssh/id_rsa
 ///
+ 
+nano ~/server/hadoop-2.9.2/etc/hadoop/hdfs-site.xml 
 
 <configuration>
   <property>
     <name>mapreduce.jobtracker.address</name>
-    <value>ec2-100-26-109-205.compute-1.amazonaws.com:54311</value>
+    <value>ec2-3-80-180-13.compute-1.amazonaws.com:54311</value>
   </property>
   <property>
     <name>mapreduce.framework.name</name>
@@ -66,7 +78,17 @@ Host dnode3
   </property>
   <property>
     <name>yarn.resourcemanager.hostname</name>
-    <value>ec2-100-26-109-205.compute-1.amazonaws.com</value>
+    <value>ec2-3-80-180-13.compute-1.amazonaws.com</value>
   </property>
 
 </configuration>
+
+
+  <property>
+    <name>dfs.replication</name>
+    <value>3</value>
+  </property>
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///usr/local/hadoop/hdfs/data</value>
+  </property>
