@@ -21,7 +21,7 @@ class network:
         self.targets = targets
         self.hidden_layer_neurons = hidden_layer_neurons
         self.learning_rate = learning_rate
-        self.weights_layer_1 = np.random.rand(hidden_layer_neurons + 1, inputs.shape[1])
+        self.weights_layer_1 = np.random.rand(inputs.shape[1], hidden_layer_neurons + 1)
         self.weights_layer_2 = np.random.rand(hidden_layer_neurons + 1, 1)
         
     def fit(self, epochs):
@@ -53,7 +53,7 @@ class network:
         return activations.sigmoid(layer1_dot_layer2)
 if __name__ == '__main__':
     
-    for i in range(6):
+    for i in range(7):
         f= open("data"+str(i+1)+".txt","r")
         inputs = []
         targets = []
@@ -67,6 +67,7 @@ if __name__ == '__main__':
         nn = network(inputs,targets)
         nn.fit(10000)
         pred = nn.predict(inputs)
+        print(pred)
         m = Measures(targets,pred)
         print("---------------")
         print("precision", m.precision())
