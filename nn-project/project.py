@@ -68,8 +68,8 @@ if __name__ == '__main__':
         nn.fit(10000)
         pred = nn.predict(inputs)
         print(pred)
+        print(targets)
         m = Measures(targets,pred)
-        print("---------------")
         print("precision", m.precision())
         print("recall", m.recall())
         print("f1", m.f1())
@@ -77,4 +77,6 @@ if __name__ == '__main__':
         print("confusion matrix")
         for i in m.cmatrix():
             print(i)
+           
+        print("---------------")
         
